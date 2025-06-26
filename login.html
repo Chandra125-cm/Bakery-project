@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | Candy Wonderland</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #dceeb1;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      display: flex;
+      width: 750px;
+      height: 500px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-section {
+      width: 50%;
+      background: #fff;
+      padding: 40px;
+    }
+
+    .form-section h2 {
+      margin-bottom: 25px;
+      color: #444;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 40px 12px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .input-group i {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .form-section button {
+      width: 100%;
+      padding: 12px;
+      background: #f2838f;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .form-section p {
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .form-section a {
+      color: #f2838f;
+      text-decoration: none;
+    }
+
+    .form-section a:hover {
+      text-decoration: underline;
+    }
+
+    .right-section {
+      width: 50%;
+      background: #f2838f;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-section img {
+      max-width: 80%;
+      margin: 0 auto;
+    }
+
+    .right-section h3 {
+      font-size: 22px;
+      margin-top: 30px;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-section">
+      <h2>Login to your account</h2>
+      <form onsubmit="return validateLogin(event)">
+        <div class="input-group">
+          <input type="text" id="username" placeholder="Username" required />
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="password" placeholder="Password" required />
+          <i onclick="togglePassword()" id="toggleIcon">👁️</i>
+        </div>
+
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+      </form>
+    </div>
+
+    <div class="right-section">
+      <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Cake Image" />
+      <h3>Welcome back to your<br>sweet wonderland!</h3>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const pass = document.getElementById("password");
+      const icon = document.getElementById("toggleIcon");
+      pass.type = pass.type === "password" ? "text" : "password";
+      icon.textContent = pass.type === "password" ? "👁️" : "🙈";
+    }
+
+    function validateLogin(event) {
+      event.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      const storedUsername = localStorage.getItem("signupUsername");
+      const storedPassword = localStorage.getItem("signupPassword");
+
+      if (username === storedUsername && password === storedPassword) {
+        alert("Login successful! Redirecting to home page...");
+        window.location.href = "home.html";
+      } else {
+        alert("Incorrect username or password.");
+      }
+    }
+  </script>
+</body>
+</html>

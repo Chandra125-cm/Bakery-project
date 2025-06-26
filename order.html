@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation - CHANDRA Bakers</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #fff8f0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .container {
+      margin-top: 40px;
+      max-width: 850px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      font-weight: bold;
+      color: #cc6600;
+    }
+    table thead {
+      background-color: #ffe6cc;
+    }
+    table tfoot {
+      background-color: #fff0e6;
+    }
+    .form-control {
+      border-radius: 8px;
+    }
+    .form-check-input:checked {
+      background-color: #cc6600;
+      border-color: #cc6600;
+    }
+    .btn-primary {
+      background-color: #cc6600;
+      border: none;
+      padding: 10px 25px;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+    .btn-primary:hover {
+      background-color: #a65200;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="text-center mb-4">🧾 Confirm Your Order</h2>
+
+    <!-- Order Table -->
+    <h5 class="text-muted">Order Summary</h5>
+    <table class="table table-bordered" id="order-table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Customer Form -->
+    <form id="orderForm" action="OrderServlet" method="post">
+      <h5 class="mt-4 text-muted">Your Details</h5>
+      <div class="mb-3">
+        <label for="name" class="form-label">Full Name:</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="e.g. abc.d" required>
+      </div>
+      <div class="mb-3">
+        <label for="phone" class="form-label">Phone Number:</label>
+        <input type="tel" class="form-control" id="phone" name="phone" placeholder="e.g. 9876543210" required>
+      </div>
+      <div class="mb-3">
+        <label for="address" class="form-label">Delivery Address:</label>
+        <textarea class="form-control" id="address" name="address" rows="3" placeholder="e.g. 123, ABC Street, Chennai" required></textarea>
+      </div>
+
+      <!-- Payment -->
+      <h5 class="text-muted">Payment Method</h5>
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="radio" name="payment" value="Cash on Delivery" checked>
+        <label class="form-check-label">Cash on Delivery</label>
+      </div>
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="radio" name="payment" value="UPI Payment">
+        <label class="form-check-label">Pay via UPI</label>
+      </div>
+
+      <!-- UPI Section -->
+      <div id="upi-section" class="mb-4" style="display: none;">
+        <h6 class="text-muted">Scan or Click to Pay</h6>
+        <a id="upi-link" class="btn btn-outline-success" href="#" target="_blank">📱 Pay Now via UPI</a>
+      </div>
+
+      <!-- Hidden cart data -->
+      <input type="hidden" name="cartData" id="cartData">
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">✔️ Confirm Order</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const tbody = document.querySelector("#order-table tbody");
+    let grandTotal = 0;
+
+    cart.forEach(item => {
+      const total = item.price * item.quantity;
+      grandTotal += total;
+      tbody.innerHTML += `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>₹${item.price.toFixed(2)}</td>
+          <td>₹${total.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML += `
+      <tr class="table-info fw-bold">
+        <td colspan="3" class="text-end">Grand Total</td>
+        <td>₹${grandTotal.toFixed(2)}</td>
+      </tr>
+    `;
+
+    document.getElementById("cartData").value = JSON.stringify(cart);
+
+    // Show UPI payment link when selected
+    document.querySelectorAll('input[name="payment"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+        const upiSection = document.getElementById("upi-section");
+        if (this.value === "UPI Payment") {
+          const upiId = "chandrabakers@okaxis"; // Replace with your actual UPI ID
+          const name = "CHANDRA Bakers";
+          const amount = grandTotal.toFixed(2);
+          const upiURL = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+          document.getElementById("upi-link").href = upiURL;
+          upiSection.style.display = "block";
+        } else {
+          upiSection.style.display = "none";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
